@@ -1,0 +1,89 @@
+<Window x:Class="Maipiyon.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="まいぴょん" Width="300"
+        SizeToContent="Height"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ResizeMode="NoResize" ShowInTaskbar="False"
+        Closing="Window_Closing">
+    <!--
+        影のために外側に余白を設ける
+    -->
+    <Grid Margin="12">
+        <Border x:Name="RootBorder" CornerRadius="12" Background="#1A1D2E">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="22" ShadowDepth="0"
+                                  Color="#000000" Opacity="0.75"/>
+            </Border.Effect>
+
+            <StackPanel>
+                <!-- ── タイトルバー（ドラッグ可） ─────────── -->
+                <Grid Height="46" x:Name="TitleBar"
+                      MouseLeftButtonDown="TitleBar_MouseDown">
+                    <Border Background="Transparent"/>
+
+                    <!-- アプリ名 -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                                Margin="14,0" IsHitTestVisible="False">
+                        <Ellipse x:Name="TitleDot" Width="7" Height="7" Fill="#00BFA5"
+                                 VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="まいぴょん" Foreground="#C8D0E8"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- ×ボタン -->
+                    <Button x:Name="CloseBtn" HorizontalAlignment="Right"
+                            VerticalAlignment="Center" Margin="0,0,10,0"
+                            Width="26" Height="26"
+                            Click="CloseBtn_Click" Cursor="Hand"
+                            ToolTip="閉じる（トレイに残ります）">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="Bd" CornerRadius="13" Background="Transparent">
+                                    <TextBlock x:Name="BdTxt" Text="✕"
+                                               Foreground="#565F89" FontSize="11"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd"    Property="Background" Value="#EF5350"/>
+                                        <Setter TargetName="BdTxt" Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+
+                <!-- セパレータ -->
+                <Border Height="1" Background="#252840"/>
+
+                <!-- ── マイク一覧 ────────────────────────── -->
+                <ScrollViewer Margin="10,10,10,4" MaxHeight="320"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="MicPanel"/>
+                </ScrollViewer>
+
+                <!-- ── ミュートボタン ──────────────────────── -->
+                <Button x:Name="MuteBtn" Margin="10,4,10,10"
+                        Click="MuteBtn_Click" Cursor="Hand" Height="44"/>
+
+                <!-- ── ホットキー表示 ─────────────────────── -->
+                <TextBlock x:Name="HotkeyLabel"
+                           FontSize="10" Foreground="#565F89"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,6"/>
+
+                <!-- ── ステータスフッター ─────────────────── -->
+                <Border Background="#13151F" CornerRadius="0,0,12,12" Height="28">
+                    <TextBlock x:Name="StatusLabel"
+                               FontSize="10" Foreground="#565F89"
+                               VerticalAlignment="Center" Margin="14,0"
+                               TextTrimming="CharacterEllipsis"/>
+                </Border>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
