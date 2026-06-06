@@ -1,4 +1,4 @@
-# まいぴょん 🎙
+# MicPyon 🎙
 
 A lightweight Windows tray app for switching microphones and toggling mute — instantly, without digging through Sound Settings.
 
@@ -8,7 +8,7 @@ A lightweight Windows tray app for switching microphones and toggling mute — i
 
 ## Why I built this
 
-Windows has no quick way to switch your default microphone. Every time I wanted to swap between my Bluetooth headset and another mic, I had to open Sound Settings, navigate to the input tab, and click through several menus. That was too slow. So I built まいぴょん.
+Windows has no quick way to switch your default microphone. Every time I wanted to swap between my Bluetooth headset and another mic, I had to open Sound Settings, navigate to the input tab, and click through several menus. That was too slow. So I built MicPyon.
 
 ---
 
@@ -38,7 +38,7 @@ Windows has no quick way to switch your default microphone. Every time I wanted 
 ## Installation
 
 1. Download the latest release from the [Releases](../../releases) page
-2. Run `まいぴょん.exe`
+2. Run `MicPyon.exe`
 3. The app appears in your system tray
 
 No installer needed.
@@ -51,9 +51,9 @@ No installer needed.
 |--------|-----|
 | Mute / Unmute | Left-click the tray icon, or press `Ctrl + Shift + M` |
 | Switch microphone | Right-click tray → select a mic, or click in the window |
-| Open window | Right-click tray → "ウィンドウを開く" |
-| Hide a device | Right-click tray → "表示するデバイスを選ぶ" |
-| Change hotkey | Right-click tray → "ホットキー設定" |
+| Open window | Right-click tray → "Open window" |
+| Hide a device | Right-click tray → "Choose devices to show" |
+| Change hotkey | Right-click tray → "Hotkey settings" |
 
 ---
 
