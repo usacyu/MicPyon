@@ -24,7 +24,7 @@ public class HotkeyDialog : Window
         ResultMods = currentMods;
         ResultVk   = currentVk;
 
-        Title           = "ホットキー設定";
+        Title           = Strings.HotkeyDialogTitle;
         Width           = 300;
         Height          = 200;
         ResizeMode      = ResizeMode.NoResize;
@@ -37,7 +37,7 @@ public class HotkeyDialog : Window
 
         panel.Children.Add(new TextBlock
         {
-            Text       = "新しいショートカットを押してください",
+            Text       = Strings.HotkeyDialogPrompt,
             Foreground = new SolidColorBrush(Color.FromRgb(0xA9, 0xB1, 0xD6)),
             FontSize   = 12,
             Margin     = new Thickness(0, 0, 0, 12),
@@ -56,7 +56,7 @@ public class HotkeyDialog : Window
 
         var btnRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center };
 
-        var okBtn = MakeBtn("保存", Color.FromRgb(0x00, 0xBF, 0xA5));
+        var okBtn = MakeBtn(Strings.Save, Color.FromRgb(0x00, 0xBF, 0xA5));
         okBtn.Click += (_, _) =>
         {
             if (_pendingVk != 0)
@@ -67,7 +67,7 @@ public class HotkeyDialog : Window
             DialogResult = true;
         };
 
-        var cancelBtn = MakeBtn("キャンセル", Color.FromRgb(0x56, 0x5F, 0x89));
+        var cancelBtn = MakeBtn(Strings.Cancel, Color.FromRgb(0x56, 0x5F, 0x89));
         cancelBtn.Margin = new Thickness(10, 0, 0, 0);
         cancelBtn.Click += (_, _) => DialogResult = false;
 

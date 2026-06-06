@@ -31,8 +31,8 @@ public partial class App
         _mutex = new System.Threading.Mutex(true, "Global\\MaipyonSingleInstance", out bool created);
         if (!created)
         {
-            MessageBox.Show("まいぴょんはすでに起動しています。\nタスクトレイを確認してください。",
-                            "まいぴょん", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(Strings.AlreadyRunning,
+                            "MicPyon", MessageBoxButton.OK, MessageBoxImage.Information);
             Shutdown();
             return;
         }
@@ -90,8 +90,8 @@ public partial class App
         // ツールチップ（64文字制限）
         var hkLabel = HotkeyHelper.Format(_settings.HotkeyMods, _settings.HotkeyVk);
         var tip = muted
-            ? $"まいぴょん [{hkLabel}] ミュート中"
-            : $"まいぴょん [{hkLabel}] {def?.Name ?? "デバイスなし"}";
+            ? Strings.TrayMuted(hkLabel)
+            : Strings.TrayActive(hkLabel, def?.Name ?? "");
         _tray.Text = tip.Length > 63 ? tip[..63] : tip;
 
         var oldMenu = _tray.ContextMenuStrip;
@@ -114,15 +114,12 @@ public partial class App
         }
 
         if (visible.Count == 0)
-            menu.Items.Add("（表示中のマイクがありません）").Enabled = false;
+            menu.Items.Add(Strings.NoMicsVisible).Enabled = false;
 
         menu.Items.Add(new WinForms.ToolStripSeparator());
 
         // ── 表示デバイス管理サブメニュー ─────────────────────
-        var mgmtLabel = excluded > 0
-            ? $"⚙ 表示するデバイス（{excluded}台を非表示中）"
-            : "⚙ 表示するデバイスを選ぶ";
-        var mgmt = new WinForms.ToolStripMenuItem(mgmtLabel);
+        var mgmt = new WinForms.ToolStripMenuItem(Strings.DevicesMgmt(excluded));
 
         foreach (var mic in allMics)
         {
@@ -130,9 +127,9 @@ public partial class App
             bool isHid = _settings.ExcludedIds.Contains(m.Id);
             var sub    = new WinForms.ToolStripMenuItem(m.Name)
             {
-                Checked      = !isHid,   // ✓ = 表示中
+                Checked      = !isHid,
                 CheckOnClick = false,
-                ToolTipText  = isHid ? "クリックで再表示" : "クリックで非表示に",
+                ToolTipText  = isHid ? Strings.ShowDevice : Strings.HideDevice,
             };
             sub.Click += (_, _) =>
             {
@@ -152,22 +149,22 @@ public partial class App
         menu.Items.Add(new WinForms.ToolStripSeparator());
 
         // ── ミュートトグル ──────────────────────────────────
-        var muteItem = new WinForms.ToolStripMenuItem(muted ? "🔊 ミュート解除" : "🔇 ミュートする");
+        var muteItem = new WinForms.ToolStripMenuItem(muted ? Strings.Unmute : Strings.MuteMenu);
         muteItem.Click += (_, _) => _svc.SetMute(!_svc.IsMuted());
         menu.Items.Add(muteItem);
 
         menu.Items.Add(new WinForms.ToolStripSeparator());
 
         // ── ホットキー設定 ───────────────────────────────────
-        menu.Items.Add($"⌨ ホットキー設定（現在: {hkLabel}）").Click += (_, _) =>
+        menu.Items.Add(Strings.HotkeyMenu(hkLabel)).Click += (_, _) =>
             Dispatcher.BeginInvoke(OpenHotkeySettings);
 
         menu.Items.Add(new WinForms.ToolStripSeparator());
 
         // ── ウィンドウ / 終了 ────────────────────────────────
-        menu.Items.Add("📋 ウィンドウを開く").Click += (_, _) => ShowWindow();
+        menu.Items.Add(Strings.OpenWindow).Click += (_, _) => ShowWindow();
         menu.Items.Add(new WinForms.ToolStripSeparator());
-        menu.Items.Add("終了").Click += (_, _) => ExitApp();
+        menu.Items.Add(Strings.Exit).Click += (_, _) => ExitApp();
 
         _tray.ContextMenuStrip = menu;
         oldMenu?.Dispose();
@@ -192,8 +189,8 @@ public partial class App
         if (!RegisterHotKey(_hotkeyHwnd, HK_MUTE, _settings.HotkeyMods, _settings.HotkeyVk))
         {
             var label = HotkeyHelper.Format(_settings.HotkeyMods, _settings.HotkeyVk);
-            _tray?.ShowBalloonTip(4000, "まいぴょん",
-                $"{label} は別のアプリが使用中のため登録できませんでした。",
+            _tray?.ShowBalloonTip(4000, "MicPyon",
+                Strings.HotkeyFailed(label),
                 WinForms.ToolTipIcon.Warning);
         }
     }

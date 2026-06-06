@@ -70,7 +70,7 @@ public partial class MainWindow : Window
     public void UpdateHotkeyLabel()
     {
         var label = HotkeyHelper.Format(_settings.HotkeyMods, _settings.HotkeyVk);
-        HotkeyLabel.Text = $"ミュート: {label}";
+        HotkeyLabel.Text = Strings.HotkeyPrefix + label;
     }
 
     private void Refresh()
@@ -85,7 +85,7 @@ public partial class MainWindow : Window
             MicPanel.Children.Add(isGhosted ? MakeGhostCard(mic) : MakeMicCard(mic));
 
         // 再取得リンク
-        var refreshLink = MakeTextBtn("🔄  再取得", ColTextDim, 10.5);
+        var refreshLink = MakeTextBtn(Strings.Refresh, ColTextDim, 10.5);
         refreshLink.Margin = new Thickness(0, 6, 0, 2);
         refreshLink.MouseLeftButtonDown += (_, _) => Refresh();
         MicPanel.Children.Add(refreshLink);
@@ -94,7 +94,7 @@ public partial class MainWindow : Window
         UpdateHotkeyLabel();
 
         var def = _mics.FirstOrDefault(m => m.IsDefault);
-        StatusLabel.Text       = def != null ? $"🎙  {def.Name}" : "既定マイクなし";
+        StatusLabel.Text       = def != null ? $"🎙  {def.Name}" : Strings.NoDefaultMic;
         StatusLabel.Foreground = new SolidColorBrush(ColTextDim);
     }
 
@@ -226,7 +226,7 @@ public partial class MainWindow : Window
 
         stack.Children.Add(new TextBlock
         {
-            Text       = "使用中 — 切り替え不可",
+            Text       = Strings.InUse,
             Foreground = new SolidColorBrush(ColTextDim),
             FontSize   = 10,
             Margin     = new Thickness(0, 2, 0, 0),
@@ -244,7 +244,7 @@ public partial class MainWindow : Window
     private void UpdateMuteBtn()
     {
         bool muted   = _svc.IsMuted();
-        MuteBtn.Content  = muted ? "🔇  ミュート中　— クリックで解除" : "🎤  ミュート";
+        MuteBtn.Content  = muted ? Strings.MuteActive : Strings.MuteIdle;
         MuteBtn.Template = MakeMuteBtnTemplate(muted);
 
         // タイトルバーのドット: 通常=teal / ミュート中=赤
