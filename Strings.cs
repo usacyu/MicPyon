@@ -31,6 +31,7 @@ public static class Strings
     public static string OpenWindow     => IsJa ? "📋 ウィンドウを開く" : "📋 Open window";
     public static string Exit           => IsJa ? "終了"                 : "Exit";
     public static string HotkeyMenu(string hk) => IsJa ? $"⌨ ホットキー設定（現在: {hk}）" : $"⌨ Hotkey settings (current: {hk})";
+    public static string StartupItem    => IsJa ? "🚀 Windows起動時に自動実行" : "🚀 Launch at Windows startup";
 
     // ── Startup ──────────────────────────────────────────────
     public static string AlreadyRunning => IsJa

@@ -16,6 +16,34 @@ public partial class App
     private System.Drawing.Icon? _iconActive;
     private System.Drawing.Icon? _iconMuted;
 
+    // ── スタートアップ登録（レジストリ）──────────────────────
+    private const string RUN_KEY  = @"Software\Microsoft\Windows\CurrentVersion\Run";
+    private const string APP_NAME = "MicPyon";
+
+    private static bool IsStartupEnabled()
+    {
+        using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(RUN_KEY, false);
+        return key?.GetValue(APP_NAME) is not null;
+    }
+
+    private static void SetStartupEnabled(bool enabled)
+    {
+        using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(RUN_KEY, true);
+        if (key == null) return;
+
+        if (enabled)
+        {
+            var exePath = System.Environment.ProcessPath
+                          ?? System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+            if (!string.IsNullOrEmpty(exePath))
+                key.SetValue(APP_NAME, $"\"{exePath}\"");
+        }
+        else
+        {
+            key.DeleteValue(APP_NAME, false);
+        }
+    }
+
     // ── グローバルホットキー ──────────────────────────────────
     [DllImport("user32.dll")] static extern bool RegisterHotKey(IntPtr hWnd, int id, uint mods, uint vk);
     [DllImport("user32.dll")] static extern bool UnregisterHotKey(IntPtr hWnd, int id);
@@ -158,6 +186,20 @@ public partial class App
         // ── ホットキー設定 ───────────────────────────────────
         menu.Items.Add(Strings.HotkeyMenu(hkLabel)).Click += (_, _) =>
             Dispatcher.BeginInvoke(OpenHotkeySettings);
+
+        // ── スタートアップ登録 ───────────────────────────────
+        var startupItem = new WinForms.ToolStripMenuItem(Strings.StartupItem)
+        {
+            Checked      = IsStartupEnabled(),
+            CheckOnClick = false,
+        };
+        startupItem.Click += (_, _) =>
+        {
+            bool newState = !IsStartupEnabled();
+            SetStartupEnabled(newState);
+            startupItem.Checked = IsStartupEnabled();
+        };
+        menu.Items.Add(startupItem);
 
         menu.Items.Add(new WinForms.ToolStripSeparator());
 
