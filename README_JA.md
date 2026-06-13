@@ -1,9 +1,23 @@
-# まいぴょん 🎙
+<div align="center">
 
-Windowsのタスクトレイに住んでる、マイク切り替え＆ミュートツールだよ。  
-サウンド設定を開かなくても、ワンクリックでマイクが切り替えられる！
+# 🎀 まいぴょん
 
-![normal](screenshots/normal.png) ![muted](screenshots/muted.png)
+**マイク切り替えもミュートも、ワンクリック。サウンド設定はもう開かない。**
+
+Windowsのタスクトレイに住む、マイク切り替え＆ミュートツールだよ。
+
+<img src="https://img.shields.io/badge/C%23-.NET%2010-512BD4?logo=dotnet&logoColor=white" alt="C# .NET 10">
+<img src="https://img.shields.io/badge/GUI-WPF-9b6bd6" alt="WPF">
+<img src="https://img.shields.io/badge/OS-Windows-0078D6?logo=windows&logoColor=white" alt="Windows">
+<img src="https://img.shields.io/badge/Audio-NAudio-67b26f" alt="NAudio">
+<img src="https://img.shields.io/badge/License-MIT-lightgrey" alt="License MIT">
+<img src="https://img.shields.io/badge/made%20with-%F0%9F%8E%80-e85d9a" alt="made with ribbon">
+
+**日本語** ｜ [English](README.md)
+
+<img src="screenshots/normal.png" width="270" alt="normal"> <img src="screenshots/muted.png" width="270" alt="muted">
+
+</div>
 
 ---
 

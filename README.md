@@ -1,8 +1,23 @@
-# MicPyon 🎙
+<div align="center">
 
-A lightweight Windows tray app for switching microphones and toggling mute — instantly, without digging through Sound Settings.
+# 🎀 MicPyon
 
-![normal](screenshots/normal.png) ![muted](screenshots/muted.png)
+**Switch your mic and toggle mute in one click — without ever opening Sound Settings.**
+
+A lightweight Windows tray app for switching the default microphone and muting, instantly.
+
+<img src="https://img.shields.io/badge/C%23-.NET%2010-512BD4?logo=dotnet&logoColor=white" alt="C# .NET 10">
+<img src="https://img.shields.io/badge/GUI-WPF-9b6bd6" alt="WPF">
+<img src="https://img.shields.io/badge/OS-Windows-0078D6?logo=windows&logoColor=white" alt="Windows">
+<img src="https://img.shields.io/badge/Audio-NAudio-67b26f" alt="NAudio">
+<img src="https://img.shields.io/badge/License-MIT-lightgrey" alt="License MIT">
+<img src="https://img.shields.io/badge/made%20with-%F0%9F%8E%80-e85d9a" alt="made with ribbon">
+
+[日本語](README_JA.md) ｜ **English**
+
+<img src="screenshots/normal.png" width="270" alt="normal"> <img src="screenshots/muted.png" width="270" alt="muted">
+
+</div>
 
 ---
 
