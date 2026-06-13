@@ -14,6 +14,7 @@ public static class Strings
     public static string InUse          => IsJa ? "使用中 — 切り替え不可"        : "In use — cannot switch";
     public static string MuteActive     => IsJa ? "🔇  ミュート中　— クリックで解除" : "🔇  Muted — Click to unmute";
     public static string MuteIdle       => IsJa ? "🎤  ミュート"                  : "🎤  Mute";
+    public static string UsingMic(string n) => IsJa ? $"🎙  {n} を使ってるよ" : $"🎙  {n}";
     public static string CloseTooltip   => IsJa ? "閉じる（トレイに残ります）"   : "Close (stays in tray)";
     public static string HotkeyPrefix   => IsJa ? "ミュート: "                    : "Mute: ";
 

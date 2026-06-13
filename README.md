@@ -18,6 +18,7 @@ Windows has no quick way to switch your default microphone. Every time I wanted 
 - **Left-click to mute/unmute** — toggle mute instantly from the tray icon
 - **Right-click to switch microphone** — set any mic as the default in one click
 - **Floating window** — a clean dark-themed panel showing all your mics
+- **Can't-miss mute overlay** — while muted, a pulsing red frame and a banner take over the window, so you notice at a glance even mid-stream (click anywhere on it to unmute)
 - **Global hotkey** — mute toggle from anywhere (default: `Ctrl + Shift + M`, customizable)
 - **Connection type display** — shows USB / Bluetooth / 3.5mm for each device
 - **Busy device indicator** — if a mic is in use by another app (e.g. voice input), it stays visible but grayed out

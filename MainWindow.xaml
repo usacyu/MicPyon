@@ -10,12 +10,13 @@
         影のために外側に余白を設ける
     -->
     <Grid Margin="12">
-        <Border x:Name="RootBorder" CornerRadius="12" Background="#1A1D2E">
+        <Border x:Name="RootBorder" CornerRadius="12" Background="#1A1D2E" ClipToBounds="True">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="22" ShadowDepth="0"
                                   Color="#000000" Opacity="0.75"/>
             </Border.Effect>
 
+            <Grid>
             <StackPanel>
                 <!-- ── タイトルバー（ドラッグ可） ─────────── -->
                 <Grid Height="46" x:Name="TitleBar"
@@ -25,7 +26,7 @@
                     <!-- アプリ名 -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
                                 Margin="14,0" IsHitTestVisible="False">
-                        <Ellipse x:Name="TitleDot" Width="7" Height="7" Fill="#00BFA5"
+                        <Ellipse x:Name="TitleDot" Width="7" Height="7" Fill="#EA4C9D"
                                  VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <TextBlock Text="まいぴょん" Foreground="#C8D0E8"
                                    FontSize="13" FontWeight="SemiBold"
@@ -72,7 +73,7 @@
 
                 <!-- ── ホットキー表示 ─────────────────────── -->
                 <TextBlock x:Name="HotkeyLabel"
-                           FontSize="10" Foreground="#565F89"
+                           FontSize="10" Foreground="#828DB8"
                            HorizontalAlignment="Center"
                            Margin="0,0,0,6"/>
 
@@ -84,6 +85,33 @@
                                TextTrimming="CharacterEllipsis"/>
                 </Border>
             </StackPanel>
+
+            <!-- ── ミュート中オーバーレイ（赤枠＋斜めバナー）──────── -->
+            <Grid x:Name="MuteOverlay" Visibility="Collapsed">
+
+                <!-- 赤い太枠（ゆっくり点滅。クリックは透過）-->
+                <Border x:Name="MuteFrame" BorderBrush="#EF5350" BorderThickness="4"
+                        CornerRadius="12" IsHitTestVisible="False"/>
+
+                <!-- 斜めバナー：クリックで解除 -->
+                <Border x:Name="MuteBanner" Background="#EF5350"
+                        Width="320" Height="40"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Cursor="Hand" RenderTransformOrigin="0.5,0.5"
+                        MouseLeftButtonDown="MuteOverlay_Unmute">
+                    <Border.RenderTransform>
+                        <RotateTransform Angle="-11"/>
+                    </Border.RenderTransform>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="🔇" FontSize="15" Foreground="White"
+                                   VerticalAlignment="Center" Margin="0,0,7,0"/>
+                        <TextBlock Text="ミュート中だよ" FontSize="15" FontWeight="SemiBold"
+                                   Foreground="White" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+            </Grid>
         </Border>
     </Grid>
 </Window>

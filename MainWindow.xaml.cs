@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace Maipiyon;
 
@@ -14,13 +15,27 @@ public partial class MainWindow : Window
     // ── ダークテーマカラー定義 ─────────────────────────────────
     private static readonly Color ColCard    = Color.FromRgb(0x22, 0x24, 0x36);
     private static readonly Color ColCardH   = Color.FromRgb(0x2A, 0x2D, 0x45);
-    private static readonly Color ColActive  = Color.FromRgb(0x0D, 0x2E, 0x2A);
-    private static readonly Color ColActiveH = Color.FromRgb(0x0F, 0x38, 0x33);
-    private static readonly Color ColAccent  = Color.FromRgb(0x00, 0xBF, 0xA5); // teal
+    private static readonly Color ColActive  = Color.FromRgb(0x2E, 0x21, 0x40); // 選択行（ピンク寄りダーク）
+    private static readonly Color ColActiveH = Color.FromRgb(0x38, 0x28, 0x4A);
+    private static readonly Color ColAccent  = Color.FromRgb(0xEA, 0x4C, 0x9D); // ブランドピンク
     private static readonly Color ColRed     = Color.FromRgb(0xEF, 0x53, 0x50);
     private static readonly Color ColTextPri = Colors.White;
-    private static readonly Color ColTextSec = Color.FromRgb(0xA9, 0xB1, 0xD6);
-    private static readonly Color ColTextDim = Color.FromRgb(0x56, 0x5F, 0x89);
+    private static readonly Color ColTextSec = Color.FromRgb(0xD5, 0xDB, 0xF0); // マイク名（非選択）
+    private static readonly Color ColTextDim = Color.FromRgb(0x82, 0x8D, 0xB8); // サブテキスト（明るめ）
+
+    // ── 行アイコン / 選択行テキスト ─────────────────────────────
+    private static readonly Color      ColChip       = Color.FromRgb(0x2A, 0x2E, 0x45);
+    private static readonly Color      ColChipActive = Color.FromRgb(0x3A, 0x24, 0x40);
+    private static readonly Color      ColIcon       = Color.FromRgb(0x9A, 0xA3, 0xCC);
+    private static readonly Color      ColNameActive = Color.FromRgb(0xF8, 0xC2, 0xDE);
+    private static readonly Color      ColSubActive  = Color.FromRgb(0xCE, 0x93, 0xB4);
+    private static readonly FontFamily SegoeIcons    = new("Segoe MDL2 Assets");
+
+    // 接続タイプ → アイコン（Bluetooth はBTマーク、それ以外はマイク）
+    private static string IconGlyph(string? conn)
+        => conn != null && conn.Contains("Bluetooth")
+            ? ((char)0xE702).ToString()   // Bluetooth
+            : ((char)0xE720).ToString();  // Microphone
 
     public MainWindow(MicService svc, AppSettings settings)
     {
@@ -94,7 +109,7 @@ public partial class MainWindow : Window
         UpdateHotkeyLabel();
 
         var def = _mics.FirstOrDefault(m => m.IsDefault);
-        StatusLabel.Text       = def != null ? $"🎙  {def.Name}" : Strings.NoDefaultMic;
+        StatusLabel.Text       = def != null ? Strings.UsingMic(def.Name) : Strings.NoDefaultMic;
         StatusLabel.Foreground = new SolidColorBrush(ColTextDim);
     }
 
@@ -125,40 +140,60 @@ public partial class MainWindow : Window
         };
         Grid.SetColumn(accentBar, 0);
 
-        // マイク名 + 接続タイプ (縦StackPanel)
-        var stack = new StackPanel
-        {
-            VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(11, 10, 11, 10),
-        };
+        // アイコンチップ ＋（マイク名 + 接続タイプ）
+        var content = new Grid { Margin = new Thickness(8, 8, 11, 8) };
+        content.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-        var text = new TextBlock
+        var iconChip = new Border
+        {
+            Width             = 30,
+            Height            = 30,
+            CornerRadius      = new CornerRadius(8),
+            Background        = new SolidColorBrush(active ? ColChipActive : ColChip),
+            Margin            = new Thickness(0, 0, 10, 0),
+            VerticalAlignment = VerticalAlignment.Center,
+            Child = new TextBlock
+            {
+                Text                = IconGlyph(mic.ConnectionType),
+                FontFamily          = SegoeIcons,
+                FontSize            = 15,
+                Foreground          = new SolidColorBrush(active ? ColAccent : ColIcon),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center,
+            },
+        };
+        Grid.SetColumn(iconChip, 0);
+
+        var stack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+        Grid.SetColumn(stack, 1);
+
+        stack.Children.Add(new TextBlock
         {
             Text         = mic.Name,
-            Foreground   = new SolidColorBrush(active ? ColTextPri : ColTextSec),
+            Foreground   = new SolidColorBrush(active ? ColNameActive : ColTextSec),
             FontSize     = 13,
             FontWeight   = active ? FontWeights.SemiBold : FontWeights.Normal,
             TextTrimming = TextTrimming.CharacterEllipsis,
-        };
-        stack.Children.Add(text);
+        });
 
         if (!string.IsNullOrEmpty(mic.ConnectionType))
         {
             stack.Children.Add(new TextBlock
             {
                 Text       = mic.ConnectionType,
-                Foreground = new SolidColorBrush(active
-                    ? Color.FromRgb(0x4D, 0xD0, 0xC4)   // 明るいteal
-                    : ColTextDim),
+                Foreground = new SolidColorBrush(active ? ColSubActive : ColTextDim),
                 FontSize   = 10,
                 Margin     = new Thickness(0, 2, 0, 0),
             });
         }
 
-        Grid.SetColumn(stack, 1);
+        content.Children.Add(iconChip);
+        content.Children.Add(stack);
+        Grid.SetColumn(content, 1);
 
         grid.Children.Add(accentBar);
-        grid.Children.Add(stack);
+        grid.Children.Add(content);
         card.Child = grid;
 
         // ホバーエフェクト
@@ -210,11 +245,32 @@ public partial class MainWindow : Window
         };
         Grid.SetColumn(accentBar, 0);
 
-        var stack = new StackPanel
+        var content = new Grid { Margin = new Thickness(8, 8, 11, 8) };
+        content.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+        var iconChip = new Border
         {
+            Width             = 30,
+            Height            = 30,
+            CornerRadius      = new CornerRadius(8),
+            Background        = new SolidColorBrush(ColChip),
+            Margin            = new Thickness(0, 0, 10, 0),
             VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(11, 10, 11, 10),
+            Child = new TextBlock
+            {
+                Text                = IconGlyph(mic.ConnectionType),
+                FontFamily          = SegoeIcons,
+                FontSize            = 15,
+                Foreground          = new SolidColorBrush(ColTextDim),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center,
+            },
         };
+        Grid.SetColumn(iconChip, 0);
+
+        var stack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+        Grid.SetColumn(stack, 1);
 
         stack.Children.Add(new TextBlock
         {
@@ -232,9 +288,12 @@ public partial class MainWindow : Window
             Margin     = new Thickness(0, 2, 0, 0),
         });
 
-        Grid.SetColumn(stack, 1);
+        content.Children.Add(iconChip);
+        content.Children.Add(stack);
+        Grid.SetColumn(content, 1);
+
         grid.Children.Add(accentBar);
-        grid.Children.Add(stack);
+        grid.Children.Add(content);
         card.Child = grid;
 
         return card;
@@ -249,12 +308,44 @@ public partial class MainWindow : Window
 
         // タイトルバーのドット: 通常=teal / ミュート中=赤
         TitleDot.Fill = new SolidColorBrush(muted ? ColRed : ColAccent);
+
+        // ミュート中オーバーレイ（赤枠＋斜めバナー）。目の端で気づけるよう赤枠を点滅
+        MuteOverlay.Visibility = muted ? Visibility.Visible : Visibility.Collapsed;
+        if (muted) { EnsurePulse(); _pulse!.Begin(); }
+        else       { _pulse?.Stop(); }
     }
 
     private void MuteBtn_Click(object sender, RoutedEventArgs e)
     {
         _svc.SetMute(!_svc.IsMuted());
         UpdateMuteBtn();
+    }
+
+    // ミュート中オーバーレイ → どこをクリックしても解除
+    private void MuteOverlay_Unmute(object sender, MouseButtonEventArgs e)
+    {
+        e.Handled = true;
+        _svc.SetMute(false);
+        UpdateMuteBtn();
+    }
+
+    // 赤枠のゆっくり点滅（うるさすぎず、視界の端で気づける速さ）
+    private Storyboard? _pulse;
+    private void EnsurePulse()
+    {
+        if (_pulse != null) return;
+        var anim = new DoubleAnimation
+        {
+            From           = 1.0,
+            To             = 0.6,
+            Duration       = new Duration(TimeSpan.FromMilliseconds(700)),
+            AutoReverse    = true,
+            RepeatBehavior = RepeatBehavior.Forever,
+        };
+        Storyboard.SetTarget(anim, MuteFrame);
+        Storyboard.SetTargetProperty(anim, new PropertyPath(OpacityProperty));
+        _pulse = new Storyboard();
+        _pulse.Children.Add(anim);
     }
 
     // ── ミュートボタンテンプレート ────────────────────────────────
@@ -276,7 +367,7 @@ public partial class MainWindow : Window
         else
         {
             factory.SetValue(Border.BackgroundProperty,
-                new SolidColorBrush(ColCard));
+                new SolidColorBrush(ColAccent));               // ブランドピンクのベタ塗り
             factory.SetValue(Border.BorderBrushProperty,
                 new SolidColorBrush(Colors.Transparent));
             factory.SetValue(Border.BorderThicknessProperty, new Thickness(1.5));
@@ -293,10 +384,9 @@ public partial class MainWindow : Window
             { RelativeSource = new System.Windows.Data.RelativeSource(
                 System.Windows.Data.RelativeSourceMode.TemplatedParent) });
         label.SetValue(TextBlock.ForegroundProperty,
-            new SolidColorBrush(muted ? ColRed : ColTextSec));
+            new SolidColorBrush(muted ? ColRed : Colors.White));
         label.SetValue(TextBlock.FontSizeProperty, 13.0);
-        label.SetValue(TextBlock.FontWeightProperty,
-            muted ? FontWeights.SemiBold : FontWeights.Normal);
+        label.SetValue(TextBlock.FontWeightProperty, FontWeights.SemiBold);
         label.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
 
         row.AppendChild(label);
